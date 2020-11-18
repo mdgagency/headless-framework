@@ -1,0 +1,40 @@
+@use "sass:map";
+
+//@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200;0,400;0,900;1,200;1,400;1,900&display=swap');
+$font-family-sans-serif: 'Open Sans', sans-serif;
+
+@import 'wp-includes/css/dist/block-library/style.min.css';
+
+@import 'node_modules/bootstrap/scss/functions';
+@import 'node_modules/bootstrap/scss/variables';
+@import 'node_modules/bootstrap/scss/mixins';
+
+@import 'colors';
+@import 'typography';
+@import 'themes';
+@import 'logo';
+//import bootstrap last
+@import '~bootstrap';
+
+// body {
+//   // color: rgba(255, 255, 255, 0.9);
+//   min-height: 100vh;
+//   min-width: 100vw;
+//   // position: relative;
+//   margin: 0;
+// }
+
+a,
+a:hover {
+  text-decoration: none;
+}
+
+.root {
+  height: 100%;
+  width: 100%;
+}
+
+#__next {
+  height: 100vh;
+  width: 100vw;
+}

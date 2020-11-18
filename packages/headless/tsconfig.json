@@ -16,7 +16,8 @@
             "dom.iterable",
             "esnext"
         ],
-        "jsx": "react"
+        "jsx": "react",
+        "baseUrl": "."
     },
     "include": [
         "**/*.ts",

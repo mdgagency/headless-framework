@@ -1,0 +1,13 @@
+@import 'colors';
+
+.light {
+  color: black;
+
+  .navbar {
+    background: $denim;
+    color: white;
+    a {
+      color: white;
+    }
+  }
+}

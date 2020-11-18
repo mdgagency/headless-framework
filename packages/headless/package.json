@@ -1,6 +1,6 @@
 {
   "name": "@wpengine/headless",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha.1",
   "description": "This module helps you integrate with the WP API and get posts (both published and draft)",
   "main": "dist/index.js",
   "scripts": {
@@ -31,7 +31,7 @@
     "isomorphic-fetch": "^3.0.0"
   },
   "peerDependencies": {
-    "react": "^17.0.1"
+    "react": ">=16.0.0"
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "0.0.35",
