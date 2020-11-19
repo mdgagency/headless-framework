@@ -24,7 +24,8 @@ $json = (object)array(
     'is_category' => is_category(),
     'is_author' => is_author(),
     'is_search' => is_search(),
-    'id' => get_the_id(),
+    'post_id' => get_the_id(),
+    'have_posts' => have_posts(),
     'is_tag' => is_tag()
 );
 

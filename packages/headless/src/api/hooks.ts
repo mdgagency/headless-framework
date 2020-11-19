@@ -5,10 +5,10 @@ import {
   revision,
   Post, PostIdType
 } from './services';
-import { base64Decode, getQueryParam, isServerSide } from './utils';
+import { base64Decode, getQueryParam, isServerSide } from '../utils';
 import { ApolloClient, NormalizedCacheObject, useApolloClient } from '@apollo/client';
 
-function useService<R = any>(
+function useApi<R = any>(
   service: typeof posts | typeof post | typeof revision,
   ...args: any[]
 ): R | undefined {
@@ -42,15 +42,15 @@ function useService<R = any>(
 }
 
 export function usePosts() {
-  return useService<Post[]>(posts);
+  return useApi<Post[]>(posts);
 }
 
 export function usePostByType(uid: string, idType?: PostIdType) {
-  return useService<Post>(post, uid, idType);
+  return useApi<Post>(post, uid, idType);
 }
 
 function useRevision(id: string) {
-  return useService<Post>(revision, id);
+  return useApi<Post>(revision, id);
 }
 
 /* eslint-disable react-hooks/rules-of-hooks */
