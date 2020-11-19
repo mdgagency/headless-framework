@@ -1,6 +1,6 @@
 import React from 'react';
-// import { Layout } from '../lib/components';
+import { DefaultTemplate } from '../themes/twentytwenty';
 
 export default function Home() {
-  return <h1>Test</h1>;
+  return <DefaultTemplate />;
 }
