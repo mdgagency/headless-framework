@@ -1,5 +1,5 @@
 import { EntryHeader } from './components/EntryHeader';
-import { usePosts } from '@wpengine/headless';
+import { Content, usePosts } from '@wpengine/headless';
 
 export const DefaultTemplate = () => {
   const posts = usePosts();
@@ -12,10 +12,7 @@ export const DefaultTemplate = () => {
             <article key={post.id} id={`post-${post.id}`}>
               <div className="post-inner">
                 <EntryHeader title={post.title} single={false} />
-                <div
-                  className="entry-content"
-                  dangerouslySetInnerHTML={{ __html: post.excerpt }}
-                />
+                <Content className="entry-content" html={post.excerpt} />
               </div>
             </article>
           ))}
