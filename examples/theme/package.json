@@ -15,11 +15,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "wpe-build": "next build"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint && git add -A ."
-    }
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wpengine/developers.git"
