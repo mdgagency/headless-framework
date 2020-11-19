@@ -18,6 +18,7 @@ header('Content-Type: application/json');
 $json = (object)array(
     'is_archive' => is_archive(),
     'post_type' => get_post_type(),
+    'is_404' => is_404(),
     'is_single' => is_single(),
     'is_page' => is_page(),
     'is_home' => is_home(),

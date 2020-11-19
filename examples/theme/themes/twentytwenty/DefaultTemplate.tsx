@@ -3,7 +3,6 @@ import { usePosts } from '@wpengine/headless';
 
 export const DefaultTemplate = () => {
   const posts = usePosts();
-  console.log(posts);
 
   return (
     <>

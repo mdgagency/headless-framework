@@ -2,7 +2,7 @@ import { EntryHeader } from './components/EntryHeader';
 import { usePost } from '@wpengine/headless';
 
 export const SingleTemplate = () => {
-  const post = usePost('');
+  const post = usePost();
 
   return (
     <>

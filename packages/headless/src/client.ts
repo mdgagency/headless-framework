@@ -1,51 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from "react";
 import {
   ApolloClient,
   InMemoryCache,
   HttpLink,
   NormalizedCacheObject,
-} from '@apollo/client';
-import fetch from 'isomorphic-fetch';
-import { base64Encode, base64Decode, getQueryParam, isServerSide, normalizeConfig } from './utils';
+} from "@apollo/client";
+import fetch from "isomorphic-fetch";
+import {
+  base64Encode,
+  base64Decode,
+  getQueryParam,
+  isServerSide,
+  normalizeConfig,
+} from "./utils";
+import { ApiConfig } from "./types";
 
-export interface ApiConfig {
-  baseUrl: string;
-  authorizeEndpoint: string;
-  secret?: string;
-}
-
-async function authorizeClient(config: ApiConfig, client: ApolloClient<NormalizedCacheObject>) {
+async function authorizeClient(
+  config: ApiConfig,
+  client: ApolloClient<NormalizedCacheObject>
+) {
   const {
     location: { search, href },
     location,
     localStorage,
   } = window;
-  const isPreview = getQueryParam(search, 'preview') === 'true';
+  const isPreview = getQueryParam(search, "preview") === "true";
 
   if (!isPreview) {
     return;
   }
 
-  const code = getQueryParam(search, 'code');
+  const code = getQueryParam(search, "code");
   const storageKey = base64Encode(`${config.authorizeEndpoint}-wpat`);
   let at = localStorage.getItem(storageKey);
 
   if (code) {
     try {
       const response = await fetch(config.authorizeEndpoint, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           code,
         }),
       });
 
-      const result = (await response.json()) as { access_token?: string; };
+      const result = (await response.json()) as { access_token?: string };
 
       if (!result || !result.access_token) {
-        console.log('Something went wrong');
+        console.log("Something went wrong");
         console.log(result);
         return;
       }
@@ -57,9 +61,9 @@ async function authorizeClient(config: ApiConfig, client: ApolloClient<Normalize
         localStorage.setItem(storageKey, at);
       }
 
-      location.replace(href.replace(/[&?]code=[^&]*/g, ''));
+      location.replace(href.replace(/[&?]code=[^&]*/g, ""));
     } catch (e) {
-      console.log('Something went wrong');
+      console.log("Something went wrong");
       console.log(e);
       return;
     }
@@ -67,7 +71,7 @@ async function authorizeClient(config: ApiConfig, client: ApolloClient<Normalize
 
   if (!at || at.length === 0) {
     location.replace(
-      `${ config.baseUrl }/generate?redirect_uri=${ encodeURIComponent(href) }`,
+      `${config.baseUrl}/generate?redirect_uri=${encodeURIComponent(href)}`
     );
 
     return;
@@ -75,59 +79,58 @@ async function authorizeClient(config: ApiConfig, client: ApolloClient<Normalize
 
   client.setLink(
     new HttpLink({
-      uri: `${ config.baseUrl }/graphql`,
+      uri: `${config.baseUrl}/graphql`,
       headers: {
-        Authorization: `Bearer ${ base64Decode(at) }`,
+        Authorization: `Bearer ${base64Decode(at)}`,
       },
-    }),
+    })
   );
 }
 
 export function useClient(config: ApiConfig) {
-  let [client, setClient] = useState<ApolloClient<NormalizedCacheObject>>();
+  const [client, setClient] = useState<ApolloClient<NormalizedCacheObject>>();
+  const isMounted = useRef(true);
 
   useEffect(() => {
-    let subscribed = true;
-
     if (!config) {
       throw new Error(
-        'You must configure the API with the baseUrl of your Wordpress site and your API secret if this is server-side.',
+        "You must configure the API with the baseUrl of your Wordpress site and your API secret if this is server-side."
       );
     }
 
     const cfg = normalizeConfig(config);
 
-    const client = new ApolloClient({
+    const apolloClient = new ApolloClient({
       link: new HttpLink({
-        uri: `${ cfg.baseUrl }/graphql`,
+        uri: `${cfg.baseUrl}/graphql`,
       }),
       cache: new InMemoryCache(),
       ssrMode: true,
     });
 
     if (isServerSide()) {
-      if (subscribed) {
-        setClient(client);
+      if (isMounted.current) {
+        setClient(apolloClient);
       }
     } else {
       void (async () => {
-        if (!subscribed) {
+        if (!isMounted.current) {
           return;
         }
 
         // Do this asynchronously so we don't interrupt flow
-        await authorizeClient(cfg, client);
+        await authorizeClient(cfg, apolloClient);
 
-        if (subscribed) {
-          setClient(client);
+        if (isMounted.current) {
+          setClient(apolloClient);
         }
       })();
     }
 
     return () => {
-      subscribed = false;
+      isMounted.current = false;
     };
-  }, [config]);
+  }, [config, isMounted, client]);
 
   return client;
 }

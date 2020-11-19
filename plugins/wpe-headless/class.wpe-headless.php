@@ -13,8 +13,8 @@ class WPE_Headless {
 	public static function init() {
         add_action('admin_init', array( __CLASS__, 'admin_init' ));
 
-        add_filter('preview_post_link', array( __CLASS__, 'set_post_preview_link' ));
-        add_filter('post_link', array( __CLASS__, 'set_post_link' ));
+        // add_filter('preview_post_link', array( __CLASS__, 'set_post_preview_link' ));
+        // add_filter('post_link', array( __CLASS__, 'set_post_link' ));
         WPE_Headless_Api::init();
         WPE_Headless_Redirect::init();
     }

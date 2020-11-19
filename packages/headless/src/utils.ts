@@ -1,7 +1,7 @@
-import { ApiConfig } from './client';
+import { ApiConfig } from "./types";
 
 export function isServerSide() {
-  return typeof window === 'undefined';
+  return typeof window === "undefined";
 }
 
 export function isBase64(str: string) {
@@ -10,7 +10,7 @@ export function isBase64(str: string) {
   }
 
   return /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?\n?$/.test(
-    str.replace(/\n/g, ''),
+    str.replace(/\n/g, "")
   );
 }
 
@@ -20,7 +20,7 @@ export function base64Decode(str: string) {
   }
 
   if (isServerSide()) {
-    return Buffer.from(str, 'base64').toString('utf8');
+    return Buffer.from(str, "base64").toString("utf8");
   }
 
   return atob(str);
@@ -28,7 +28,7 @@ export function base64Decode(str: string) {
 
 export function base64Encode(str: string) {
   if (isServerSide()) {
-    return Buffer.from(str, 'utf8').toString('base64');
+    return Buffer.from(str, "utf8").toString("base64");
   }
 
   return btoa(str);
@@ -36,25 +36,25 @@ export function base64Encode(str: string) {
 
 export function getQueryParam(search: string, param: string) {
   if (search.length === 0) {
-    return '';
+    return "";
   }
 
   let query = search;
 
-  if (query[0] === '?') {
+  if (query[0] === "?") {
     query = query.substring(1);
   }
 
-  const params = query.split('&');
+  const params = query.split("&");
 
   for (let i = 0; i < params.length; i += 1) {
-    const pair = params[i].split('=');
+    const pair = params[i].split("=");
     if (decodeURIComponent(pair[0]) === param) {
       return decodeURIComponent(pair[1]);
     }
   }
 
-  return '';
+  return "";
 }
 
 export function normalizeConfig(config: ApiConfig) {
@@ -67,4 +67,19 @@ export function normalizeConfig(config: ApiConfig) {
   }
 
   return { ...config, baseUrl };
+}
+
+/**
+ * Trims the last slash off of a string, if one exists
+ *
+ * @export
+ * @param {string} str
+ * @returns {string}
+ */
+export function trimTrailingSlash(str: string): string {
+  if (!str) {
+    return str;
+  }
+
+  return str.replace(/\/$/, "");
 }

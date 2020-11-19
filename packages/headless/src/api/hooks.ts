@@ -1,12 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from "react";
 import {
-  posts,
-  post,
-  revision,
-  Post, PostIdType
-} from './services';
-import { base64Decode, getQueryParam, isServerSide } from '../utils';
-import { ApolloClient, NormalizedCacheObject, useApolloClient } from '@apollo/client';
+  ApolloClient,
+  NormalizedCacheObject,
+  useApolloClient,
+} from "@apollo/client";
+import { posts, post, revision, Post, PostIdType } from "./services";
+import {
+  base64Decode,
+  base64Encode,
+  getQueryParam,
+  isServerSide,
+} from "../utils";
+import { Context } from "../context";
 
 function useApi<R = any>(
   service: typeof posts | typeof post | typeof revision,
@@ -16,27 +21,28 @@ function useApi<R = any>(
   const client = useApolloClient();
 
   useEffect(() => {
-    if (!client) {
-      return;
-    }
-
     let subscribed = true;
+    if (client) {
+      void (async () => {
+        const p = (await (service as (
+          client: ApolloClient<NormalizedCacheObject>,
+          ...a: any[]
+        ) => Promise<any>)(
+          client as ApolloClient<NormalizedCacheObject>,
+          ...args
+        )) as R;
 
-    void (async () => {
-      const p = (await (service as (client: ApolloClient<NormalizedCacheObject>, ...a: any[]) => Promise<any>)(
-        client as ApolloClient<NormalizedCacheObject>,
-        ...args,
-      )) as R;
-
-      if (subscribed) {
-        setResult(p);
-      }
-    })();
+        if (subscribed) {
+          setResult(p);
+        }
+      })();
+    }
 
     return () => {
       subscribed = false;
     };
-  }, [client]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [client, service, ...args]);
 
   return result;
 }
@@ -45,7 +51,7 @@ export function usePosts() {
   return useApi<Post[]>(posts);
 }
 
-export function usePostByType(uid: string, idType?: PostIdType) {
+export function usePostByType(uid: string | number, idType?: PostIdType) {
   return useApi<Post>(post, uid, idType);
 }
 
@@ -54,15 +60,28 @@ function useRevision(id: string) {
 }
 
 /* eslint-disable react-hooks/rules-of-hooks */
-export function usePost(uid: string) {
-  const decoded = base64Decode(uid) || '';
-  const status = isServerSide()
-    ? ''
-    : getQueryParam(window.location.search, 'status');
+export function usePost(uid?: string) {
+  const { pageInfo } = useContext(Context);
 
-  if (decoded.indexOf('post:') === 0) {
-    if (status === 'inherit') {
-      return useRevision(decoded.split(':')[1]);
+  if (!uid && !!pageInfo) {
+    return usePostByType(
+      base64Encode(`post:${pageInfo.post_id}`),
+      PostIdType.ID
+    );
+  }
+
+  if (!uid) {
+    return undefined;
+  }
+
+  const decoded = base64Decode(uid) || "";
+  const status = isServerSide()
+    ? ""
+    : getQueryParam(window.location.search, "status");
+
+  if (decoded.indexOf("post:") === 0) {
+    if (status === "inherit") {
+      return useRevision(decoded.split(":")[1]);
     }
 
     return usePostByType(uid, PostIdType.ID);

@@ -29,6 +29,7 @@
     "@apollo/client": "^3.2.5",
     "graphql": "^15.4.0",
     "isomorphic-fetch": "^3.0.0",
+    "moize": "^5.4.7",
     "next": "^10.0.1"
   },
   "peerDependencies": {
