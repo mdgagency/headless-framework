@@ -29,9 +29,7 @@ export function Content<T = Element>({
         ev.stopPropagation();
 
         // No need to wait for this, we don't care about when it finishes
-        void router.push(link.href, undefined, {
-          shallow: true,
-        });
+        void router.push(link.href);
       });
     });
   });

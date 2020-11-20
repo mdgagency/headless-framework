@@ -89,11 +89,11 @@ export function getUrlPath(url?: string) {
     return "";
   }
 
-  const exec = /(?:https?:\/\/)?(?:[^?/\s]+[?/])(.*)/.exec(url);
+  const exec = /(?:https?:\/\/)?(?:[^?/\s]+([?/]))(.*)/.exec(url);
 
   if (!exec || exec.length < 1) {
     return "";
   }
 
-  return exec[1];
+  return `${exec[1]}${exec[2]}`;
 }

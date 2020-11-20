@@ -12,10 +12,16 @@ export function usePageInfo(baseUrl: string) {
     let subscribed = true;
 
     if (router) {
-      const page = router.asPath;
+      let page = router.asPath;
 
       if (page.indexOf("[[") === -1) {
         const wpUrl = utils.trimTrailingSlash(baseUrl);
+
+        const path = utils.getUrlPath(page);
+
+        if (!!path) {
+          page = path;
+        }
 
         void (async () => {
           const info = await getPageInfo(`${wpUrl}${page}`);
