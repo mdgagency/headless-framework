@@ -1,5 +1,5 @@
-import React, { useLayoutEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
+import React, { useLayoutEffect, useRef } from "react";
+import { useRouter } from "next/router";
 
 export interface ContentProps<T = Element> extends React.HTMLAttributes<T> {
   html?: string | null;
@@ -20,11 +20,11 @@ export function Content<T = Element>({
     }
 
     const links: NodeListOf<HTMLAnchorElement> = elRef.current.querySelectorAll(
-      'a',
+      "a"
     );
 
     links.forEach((link) => {
-      link.addEventListener('click', (ev) => {
+      link.addEventListener("click", (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
 
@@ -36,9 +36,9 @@ export function Content<T = Element>({
     });
   });
 
-  return React.createElement(element || 'div', {
+  return React.createElement(element || "div", {
     dangerouslySetInnerHTML: {
-      __html: html || '',
+      __html: html || "",
     },
     ref: elRef,
     ...props,

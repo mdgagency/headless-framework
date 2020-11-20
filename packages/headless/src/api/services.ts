@@ -1,21 +1,6 @@
 import { gql, ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import moize from "moize";
-
-export interface Post {
-  id: string;
-  title: string;
-  slug: string;
-  status: string;
-  content: string;
-  excerpt: string;
-}
-
-export enum PostIdType {
-  DATABASE_ID = "DATABASE_ID",
-  ID = "ID",
-  URI = "URI",
-  SLUG = "SLUG",
-}
+import { GeneralSettings, PostIdType, Post } from "../types";
 
 export const posts = moize(
   async function posts(client: ApolloClient<NormalizedCacheObject>) {
@@ -118,3 +103,20 @@ export const revision = moize(
     maxAge: 1000,
   }
 );
+
+export const generalSettings = moize(async function generalSettings(
+  client: ApolloClient<NormalizedCacheObject>
+): Promise<GeneralSettings> {
+  const result = await client.query<{ generalSettings: GeneralSettings }>({
+    query: gql`
+      query {
+        generalSettings {
+          title
+          description
+        }
+      }
+    `,
+  });
+
+  return result?.data?.generalSettings;
+});

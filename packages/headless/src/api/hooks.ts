@@ -4,7 +4,9 @@ import {
   NormalizedCacheObject,
   useApolloClient,
 } from "@apollo/client";
-import { posts, post, revision, Post, PostIdType } from "./services";
+import { GeneralSettings } from "src/types";
+import { Post, PostIdType } from "../types";
+import { posts, post, revision, generalSettings } from "./services";
 import {
   base64Decode,
   base64Encode,
@@ -90,3 +92,28 @@ export function usePost(uid?: string) {
   return usePostByType(uid, PostIdType.SLUG);
 }
 /* eslint-enable react-hooks/rules-of-hooks */
+
+export function useGeneralSettings() {
+  const [result, setResult] = useState<GeneralSettings>();
+  const client = useApolloClient();
+
+  useEffect(() => {
+    let subscribed = true;
+
+    if (client) {
+      void (async () => {
+        const settings = await generalSettings(
+          client as ApolloClient<NormalizedCacheObject>
+        );
+
+        if (subscribed && !!settings) {
+          setResult(settings);
+        }
+      })();
+    }
+
+    return () => {
+      subscribed = false;
+    };
+  }, [result, client]);
+}

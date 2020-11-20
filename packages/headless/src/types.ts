@@ -33,3 +33,24 @@ export interface HeadlessTheme {
 export interface ThemeContext {
   pageInfo?: PageInfo;
 }
+
+export enum PostIdType {
+  DATABASE_ID = "DATABASE_ID",
+  ID = "ID",
+  URI = "URI",
+  SLUG = "SLUG",
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  status: string;
+  content: string;
+  excerpt: string;
+}
+
+export interface GeneralSettings {
+  title: string;
+  description: string;
+}
