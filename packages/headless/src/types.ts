@@ -17,6 +17,8 @@ export interface PageInfo {
   is_author: boolean;
   is_search: boolean;
   is_tag: boolean;
+  is_preview?: boolean;
+  is_revision?: boolean;
 }
 
 export interface TemplateProps {

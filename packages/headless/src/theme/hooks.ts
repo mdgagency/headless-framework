@@ -12,33 +12,21 @@ export function usePageInfo(baseUrl: string) {
     let subscribed = true;
 
     if (router) {
-      let { page } = router.query;
+      let page = router.asPath;
 
-      if (!page) {
-        page = "";
+      if (page.indexOf('[[') === -1) {
+        const wpUrl = utils.trimTrailingSlash(baseUrl);
+
+        void (async () => {
+          const info = await getPageInfo(`${wpUrl}${page}`);
+
+          if (!subscribed) {
+            return;
+          }
+
+          setPageInfo(info);
+        })();
       }
-
-      if (Array.isArray(page)) {
-        page = page.join(",");
-      }
-
-      if (page[0] !== "/") {
-        page = `/${page}`;
-      }
-
-      const path = page.replace(/,/g, "/");
-
-      const wpUrl = utils.trimTrailingSlash(baseUrl);
-
-      void (async () => {
-        const info = await getPageInfo(`${wpUrl}${path}`);
-
-        if (!subscribed) {
-          return;
-        }
-
-        setPageInfo(info);
-      })();
     }
 
     return () => {

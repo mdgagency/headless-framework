@@ -66,6 +66,10 @@ export function usePost(uid?: string) {
   const { pageInfo } = useContext(Context);
 
   if (!uid && !!pageInfo) {
+    if (pageInfo.is_revision) {
+      return useRevision('' + pageInfo.post_id);
+    }
+
     return usePostByType(
       base64Encode(`post:${pageInfo.post_id}`),
       PostIdType.ID
