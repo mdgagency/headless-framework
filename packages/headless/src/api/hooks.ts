@@ -53,8 +53,12 @@ export function usePosts() {
   return useApi<Post[]>(posts);
 }
 
-export function usePostByType(uid: string | number, idType?: PostIdType) {
-  return useApi<Post>(post, uid, idType);
+export function usePostByType(
+  uid: string | number,
+  idType?: PostIdType,
+  asPreview?: boolean
+) {
+  return useApi<Post>(post, uid, idType, asPreview);
 }
 
 function useRevision(id: string) {
@@ -66,13 +70,14 @@ export function usePost(uid?: string) {
   const { pageInfo } = useContext(Context);
 
   if (!uid && !!pageInfo) {
-    if (pageInfo.is_revision) {
-      return useRevision('' + pageInfo.post_id);
-    }
+    // if (pageInfo.is_preview) {
+    //   return useRevision('' + pageInfo.post_id);
+    // }
 
     return usePostByType(
       base64Encode(`post:${pageInfo.post_id}`),
-      PostIdType.ID
+      PostIdType.ID,
+      pageInfo.is_preview
     );
   }
 

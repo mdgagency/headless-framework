@@ -1,24 +1,24 @@
 import moize from "moize";
 import fetch from "isomorphic-fetch";
 import { PageInfo } from "../types";
-import { getQueryParam } from '../utils';
+import { getQueryParam } from "../utils";
 
 export const getPageInfo = moize(
   async function getPageInfo(link: string): Promise<PageInfo> {
     if (/preview=true/.test(link)) {
-      const search: string = link.split('?')[1];
-      let id = getQueryParam(search, 'p');
+      const search: string = link.split("?")[1];
+      let id = getQueryParam(search, "p");
       let isRevision = false;
 
       if (!id) {
-        id = getQueryParam(search, 'preview_id');
+        id = getQueryParam(search, "preview_id");
         isRevision = true;
       }
 
       return {
         have_posts: false,
         post_id: Number(id),
-        post_type: 'post',
+        post_type: "post",
         is_404: false,
         is_archive: false,
         is_single: true,

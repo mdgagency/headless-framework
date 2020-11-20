@@ -50,6 +50,8 @@ export interface Post {
   status: string;
   content: string;
   excerpt: string;
+  isPreview: boolean;
+  link: string;
 }
 
 export interface GeneralSettings {

@@ -12,9 +12,9 @@ export function usePageInfo(baseUrl: string) {
     let subscribed = true;
 
     if (router) {
-      let page = router.asPath;
+      const page = router.asPath;
 
-      if (page.indexOf('[[') === -1) {
+      if (page.indexOf("[[") === -1) {
         const wpUrl = utils.trimTrailingSlash(baseUrl);
 
         void (async () => {
