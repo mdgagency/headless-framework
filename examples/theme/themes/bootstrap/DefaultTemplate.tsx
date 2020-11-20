@@ -11,7 +11,7 @@ export const DefaultTemplate = () => {
         {posts &&
           posts.map((post) => (
             <div
-              className="card mr-3"
+              className="card mr-3 mb-3"
               key={post.id}
               id={`post-${post.id}`}
               style={{ width: '18rem' }}>
@@ -23,7 +23,11 @@ export const DefaultTemplate = () => {
                     link={post.link}
                   />
                 </h5>
-                <Content element="p" className="card-text" html={post.excerpt} />
+                <Content
+                  element="p"
+                  className="card-text"
+                  html={post.excerpt}
+                />
               </div>
             </div>
           ))}

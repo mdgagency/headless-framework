@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { HeadlessProvider } from '@wpengine/headless';
-import * as theme from '../themes/bootstrap';
+import * as theme from '../themes';
 
 export default function Page() {
   return (
