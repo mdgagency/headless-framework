@@ -1,10 +1,10 @@
 import React from 'react';
 import { AppContext, AppInitialProps } from 'next/app';
-import '../themes/twentytwenty/styles.css';
+import '../themes/bootstrap/styles.css';
 
 export default function App({
-    Component,
-    pageProps,
+  Component,
+  pageProps,
 }: AppContext & AppInitialProps) {
-    return <Component { ...pageProps } />;
+  return <Component {...pageProps} />;
 }
