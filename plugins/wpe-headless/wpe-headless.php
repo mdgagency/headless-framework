@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: WPE Headless
- * Plugin URI: https://somesite.com/
+ * Plugin URI: https://wpengine.com/
  * Description: Generates Headlesss and allows you to exchange them for REST API access tokens
- * Author: Will Johnston
+ * Author: WP Engine
  * Version: 0.0.1
- * Author URI: https://github.com/wjohnsto
+ * Author URI: https://github.com/wpengine
  */
 
 define( 'WPE Headless', '0.0.1' );
