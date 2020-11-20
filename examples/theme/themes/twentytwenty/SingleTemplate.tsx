@@ -11,7 +11,7 @@ export const SingleTemplate = () => {
         {post && (
           <article key={post.id} id={`post-${post.id}`}>
             <div className="post-inner">
-              <EntryHeader title={post.title} single={true} />
+              <EntryHeader title={post.title} single={true} link={post.link} />
               <Content className="entry-content" html={post.content} />
             </div>
           </article>
