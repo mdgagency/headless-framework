@@ -116,4 +116,6 @@ export function useGeneralSettings() {
       subscribed = false;
     };
   }, [result, client]);
+
+  return result;
 }

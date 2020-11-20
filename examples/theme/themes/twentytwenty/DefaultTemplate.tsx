@@ -1,8 +1,11 @@
 import { EntryHeader } from './components/EntryHeader';
-import { Content, usePosts } from '@wpengine/headless';
+import { Content, useGeneralSettings, usePosts } from '@wpengine/headless';
 
 export const DefaultTemplate = () => {
   const posts = usePosts();
+  const settings = useGeneralSettings();
+
+  console.log(settings);
 
   return (
     <>
