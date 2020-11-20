@@ -24,7 +24,7 @@ export const DefaultTemplate = () => {
                   <EntryHeader
                     title={post.title}
                     single={false}
-                    slug={post.slug}
+                    link={post.link}
                   />
                 </h5>
                 <p className="card-text">
