@@ -1,10 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { AppContext, AppInitialProps } from 'next/app';
 import { HeadlessProvider } from '@wpengine/headless';
 import * as theme from '../themes/bootstrap';
 
-export default function Page({ pageProps }: AppInitialProps) {
+export default function Page() {
   return (
     <HeadlessProvider
       api={{

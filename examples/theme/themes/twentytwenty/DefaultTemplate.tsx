@@ -1,14 +1,9 @@
 import { EntryHeader } from './components/EntryHeader';
-import { Header } from './components/Header';
-import { Content, useGeneralSettings, usePosts } from '@wpengine/headless';
+import { Content, usePosts } from '@wpengine/headless';
 import { DefaultLayout } from './layouts/DefaultLayout';
 
 export const DefaultTemplate = () => {
   const posts = usePosts();
-  const settings = useGeneralSettings();
-
-  console.log(posts);
-
   return (
     <DefaultLayout>
       <main id="site-content" role="main">

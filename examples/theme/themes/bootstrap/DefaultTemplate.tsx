@@ -1,13 +1,9 @@
 import { EntryHeader } from './components/EntryHeader';
-import { Header } from './components/Header';
-import { Content, useGeneralSettings, usePosts } from '@wpengine/headless';
+import { Content, usePosts } from '@wpengine/headless';
 import { DefaultLayout } from './layouts/DefaultLayout';
 
 export const DefaultTemplate = () => {
   const posts = usePosts();
-  const settings = useGeneralSettings();
-
-  console.log(settings);
 
   return (
     <DefaultLayout>
@@ -27,9 +23,7 @@ export const DefaultTemplate = () => {
                     link={post.link}
                   />
                 </h5>
-                <p className="card-text">
-                  <Content className="entry-content" html={post.excerpt} />
-                </p>
+                <Content element="p" className="card-text" html={post.excerpt} />
               </div>
             </div>
           ))}
