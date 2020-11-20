@@ -7,7 +7,7 @@ export const DefaultTemplate = () => {
   const posts = usePosts();
   const settings = useGeneralSettings();
 
-  console.log(settings);
+  console.log(posts);
 
   return (
     <DefaultLayout>
@@ -19,7 +19,7 @@ export const DefaultTemplate = () => {
                 <EntryHeader
                   title={post.title}
                   single={false}
-                  slug={post.slug}
+                  link={post.link}
                 />
                 <Content className="entry-content" html={post.excerpt} />
               </div>

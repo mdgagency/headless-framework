@@ -1,6 +1,7 @@
 import { gql, ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import moize from "moize";
 import { GeneralSettings, PostIdType, Post } from "../types";
+import * as utils from "../utils";
 
 export const posts = moize(
   async function posts(client: ApolloClient<NormalizedCacheObject>) {
@@ -15,13 +16,32 @@ export const posts = moize(
               status
               content
               excerpt
+              link
             }
           }
         }
       `,
     });
 
-    return result?.data?.posts?.nodes;
+    const thePosts = result?.data?.posts?.nodes;
+
+    if (!thePosts) {
+      return thePosts;
+    }
+
+    return thePosts.map((thePost) => {
+      const { id, title, slug, status, content, excerpt } = thePost;
+
+      return {
+        id,
+        title,
+        slug,
+        status,
+        content,
+        excerpt,
+        link: utils.getUrlPath(thePost.link),
+      };
+    });
   },
   {
     isDeepEqual: false,
@@ -34,29 +54,49 @@ export const posts = moize(
 export const post = moize(
   async function post(
     client: ApolloClient<NormalizedCacheObject>,
-    id: string,
-    idType = PostIdType.SLUG
+    postId: string,
+    idType = PostIdType.SLUG,
+    asPreview = false
   ): Promise<Post | void> {
-    if (!id) {
+    if (!postId) {
       return Promise.resolve();
     }
 
     const result = await client.query<{ post: Post }>({
       query: gql`
             query {
-                post(idType: ${idType}, id: "${id}") {
+                post(idType: ${idType}, id: "${postId}", asPreview: ${asPreview}) {
                     id
                     title
                     slug
                     status
                     content
                     excerpt
+                    isPreview
+                    link
                 }
             }
         `,
     });
 
-    return result?.data?.post;
+    const thePost = result?.data?.post;
+
+    if (!thePost) {
+      return thePost;
+    }
+
+    const { id, title, slug, status, content, excerpt, isPreview } = thePost;
+
+    return {
+      id,
+      title,
+      slug,
+      status,
+      content,
+      excerpt,
+      link: utils.getUrlPath(thePost.link),
+      isPreview,
+    };
   },
   {
     isDeepEqual: false,

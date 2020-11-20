@@ -83,3 +83,17 @@ export function trimTrailingSlash(str: string): string {
 
   return str.replace(/\/$/, "");
 }
+
+export function getUrlPath(url?: string) {
+  if (!url) {
+    return "";
+  }
+
+  const exec = /(?:https?:\/\/)?(?:[^?/\s]+[?/])(.*)/.exec(url);
+
+  if (!exec || exec.length < 1) {
+    return "";
+  }
+
+  return exec[1];
+}

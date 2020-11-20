@@ -40,14 +40,10 @@ class WPE_Headless {
     }
 
     public static function set_post_link($link) {
-        if (is_admin()) {
-            $base_uri = WPE_Headless_Constants::get_frontend_uri_option();
-            $url = str_replace(get_home_url() . '/', $base_uri, $link);
+        $base_uri = WPE_Headless_Constants::get_frontend_uri_option();
+        $url = str_replace(get_home_url() . '/', $base_uri, $link);
 
-            return $url;
-        }
-
-        return $link;
+        return $url;
     }
 
     public static function deactivate() {
