@@ -6,5 +6,6 @@ export default function App({
   Component,
   pageProps,
 }: AppContext & AppInitialProps) {
+  // eslint-disable-next-line react/jsx-props-no-spreading
   return <Component {...pageProps} />;
 }

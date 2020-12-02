@@ -1,8 +1,9 @@
-import { EntryHeader } from './components/EntryHeader';
+import React from 'react';
 import { Content, usePosts } from '@wpengine/headless';
+import { EntryHeader } from './components/EntryHeader';
 import { DefaultLayout } from './layouts/DefaultLayout';
 
-export const DefaultTemplate = () => {
+export function DefaultTemplate() {
   const posts = usePosts();
 
   return (
@@ -20,7 +21,7 @@ export const DefaultTemplate = () => {
                   <EntryHeader
                     title={post.title}
                     single={false}
-                    link={post.link}
+                    uri={post.uri}
                   />
                 </h5>
                 <Content
@@ -34,4 +35,4 @@ export const DefaultTemplate = () => {
       </div>
     </DefaultLayout>
   );
-};
+}

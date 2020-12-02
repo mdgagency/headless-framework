@@ -1,7 +1,8 @@
+import React from 'react';
 import { useGeneralSettings } from '@wpengine/headless';
 import Link from 'next/link';
 
-export const Header = () => {
+export function Header() {
   const siteInfo = useGeneralSettings();
 
   return (
@@ -20,4 +21,4 @@ export const Header = () => {
       </div>
     </header>
   );
-};
+}

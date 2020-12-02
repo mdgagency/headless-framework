@@ -1,6 +1,7 @@
+import React from 'react';
 import { Header } from '../components/Header';
 
-export const DefaultLayout: React.FC = ({ children }) => {
+export function DefaultLayout({ children }: React.PropsWithChildren<unknown>) {
   return (
     <>
       <Header />
@@ -9,4 +10,4 @@ export const DefaultLayout: React.FC = ({ children }) => {
       </main>
     </>
   );
-};
+}
