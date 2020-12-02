@@ -63,7 +63,7 @@ class WPE_Headless {
         // register a new section in the "general" page
         add_settings_section(
             'WPE_Headlesss_settings',
-            'WP Authentication Codes', array( __CLASS__, 'settings_section_callback' ),
+            'WPE Headless', array( __CLASS__, 'settings_section_callback' ),
             'general'
         );
 
@@ -85,7 +85,7 @@ class WPE_Headless {
 
     // section content cb
     public static function settings_section_callback() {
-        // echo '<p>Settings for WP Authentication Codes.</p>';
+        // echo '<p>Settings for WPE Headless.</p>';
     }
 
     // section content cb
