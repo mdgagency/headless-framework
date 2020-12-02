@@ -1,45 +1,45 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from 'react';
 import {
   ApolloClient,
   InMemoryCache,
   HttpLink,
   NormalizedCacheObject,
-} from "@apollo/client";
-import fetch from "isomorphic-fetch";
+} from '@apollo/client';
+import fetch from 'isomorphic-fetch';
 import {
   base64Encode,
   base64Decode,
   getQueryParam,
   isServerSide,
   normalizeConfig,
-} from "./utils";
-import { ApiConfig } from "./types";
+} from './utils';
+import { ApiConfig } from './types';
 
 async function authorizeClient(
   config: ApiConfig,
-  client: ApolloClient<NormalizedCacheObject>
+  client: ApolloClient<NormalizedCacheObject>,
 ) {
   const {
     location: { search, href },
     location,
     localStorage,
   } = window;
-  const isPreview = getQueryParam(search, "preview") === "true";
+  const isPreview = getQueryParam(search, 'preview') === 'true';
 
   if (!isPreview) {
     return;
   }
 
-  const code = getQueryParam(search, "code");
+  const code = getQueryParam(search, 'code');
   const storageKey = base64Encode(`${config.authorizeEndpoint}-wpat`);
   let at = localStorage.getItem(storageKey);
 
   if (code) {
     try {
       const response = await fetch(config.authorizeEndpoint, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           code,
@@ -49,7 +49,7 @@ async function authorizeClient(
       const result = (await response.json()) as { access_token?: string };
 
       if (!result || !result.access_token) {
-        console.log("Something went wrong");
+        console.log('Something went wrong');
         console.log(result);
         return;
       }
@@ -61,9 +61,9 @@ async function authorizeClient(
         localStorage.setItem(storageKey, at);
       }
 
-      location.replace(href.replace(/[&?]code=[^&]*/g, ""));
+      location.replace(href.replace(/[&?]code=[^&]*/g, ''));
     } catch (e) {
-      console.log("Something went wrong");
+      console.log('Something went wrong');
       console.log(e);
       return;
     }
@@ -71,7 +71,7 @@ async function authorizeClient(
 
   if (!at || at.length === 0) {
     location.replace(
-      `${config.baseUrl}/generate?redirect_uri=${encodeURIComponent(href)}`
+      `${config.baseUrl}/generate?redirect_uri=${encodeURIComponent(href)}`,
     );
 
     return;
@@ -83,7 +83,7 @@ async function authorizeClient(
       headers: {
         Authorization: `Bearer ${base64Decode(at)}`,
       },
-    })
+    }),
   );
 }
 
@@ -94,7 +94,7 @@ export function useClient(config: ApiConfig) {
   useEffect(() => {
     if (!config) {
       throw new Error(
-        "You must configure the API with the baseUrl of your Wordpress site and your API secret if this is server-side."
+        'You must configure the API with the baseUrl of your Wordpress site and your API secret if this is server-side.',
       );
     }
 

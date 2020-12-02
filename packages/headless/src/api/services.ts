@@ -1,45 +1,77 @@
-import { gql, ApolloClient, NormalizedCacheObject } from "@apollo/client";
-import moize from "moize";
-import { GeneralSettings, PostIdType, Post } from "../types";
-import * as utils from "../utils";
+import { gql, ApolloClient, NormalizedCacheObject } from '@apollo/client';
+import moize from 'moize';
+import {
+  GeneralSettings,
+  ContentNodeIdType,
+  Connection,
+  Post,
+  Page,
+} from '../types';
+import * as utils from '../utils';
 
 export const posts = moize(
   async function posts(client: ApolloClient<NormalizedCacheObject>) {
-    const result = await client.query<{ posts: { nodes: Post[] } }>({
+    const result = await client.query<{ posts: Connection<Post> }>({
       query: gql`
         query {
           posts {
-            nodes {
-              id
-              title
-              slug
-              status
-              content
-              excerpt
-              link
+            pageInfo {
+              endCursor
+              hasNextPage
+              hasPreviousPage
+              startCursor
+            }
+            edges {
+              cursor
+              node {
+                id
+                slug
+                title
+                content
+                isRevision
+                isPreview
+                isSticky
+                excerpt
+                uri
+                status
+              }
             }
           }
         }
       `,
     });
 
-    const thePosts = result?.data?.posts?.nodes;
+    const thePosts = result?.data?.posts?.edges.map(({ node }) => node);
 
     if (!thePosts) {
       return thePosts;
     }
 
     return thePosts.map((thePost) => {
-      const { id, title, slug, status, content, excerpt } = thePost;
+      const {
+        id,
+        slug,
+        title,
+        content,
+        isRevision,
+        isPreview,
+        isSticky,
+        excerpt,
+        uri,
+        status,
+      } = thePost;
 
       return {
         id,
-        title,
         slug,
-        status,
+        title,
         content,
+        isRevision,
+        isPreview,
+        isSticky,
         excerpt,
-        link: utils.getUrlPath(thePost.link),
+        uri: utils.getUrlPath(uri),
+        status,
       };
     });
   },
@@ -48,104 +80,108 @@ export const posts = moize(
     isPromise: true,
     isSerialized: true,
     maxAge: 1000,
-  }
-);
-
-export const post = moize(
-  async function post(
-    client: ApolloClient<NormalizedCacheObject>,
-    postId: string,
-    idType = PostIdType.SLUG,
-    asPreview = false
-  ): Promise<Post | void> {
-    if (!postId) {
-      return Promise.resolve();
-    }
-
-    const result = await client.query<{ post: Post }>({
-      query: gql`
-            query {
-                post(idType: ${idType}, id: "${postId}", asPreview: ${asPreview}) {
-                    id
-                    title
-                    slug
-                    status
-                    content
-                    excerpt
-                    isPreview
-                    link
-                }
-            }
-        `,
-    });
-
-    const thePost = result?.data?.post;
-
-    if (!thePost) {
-      return thePost;
-    }
-
-    const { id, title, slug, status, content, excerpt, isPreview } = thePost;
-
-    return {
-      id,
-      title,
-      slug,
-      status,
-      content,
-      excerpt,
-      link: utils.getUrlPath(thePost.link),
-      isPreview,
-    };
   },
-  {
-    isDeepEqual: false,
-    isPromise: true,
-    isSerialized: true,
-    maxAge: 1000,
-  }
 );
 
-export const revision = moize(
-  async function revision(
-    client: ApolloClient<NormalizedCacheObject>,
-    id: string
-  ): Promise<Post | void> {
-    if (!id) {
-      return Promise.resolve();
+export const contentNode = moize(async function contentNode(
+  client: ApolloClient<NormalizedCacheObject>,
+  id: string,
+  idType: ContentNodeIdType = ContentNodeIdType.URI,
+  asPreview = false,
+): Promise<Post | Page> {
+  const result = await client.query<{ contentNode: Post | Page }>({
+    query: gql`
+      query {
+        contentNode(id: "${id}", idType: ${idType}, asPreview: ${asPreview}) {
+          ... on Post {
+            id
+            slug
+            title
+            content
+            isRevision
+            isPreview
+            isSticky
+            excerpt
+            uri
+            status
+            preview {
+              node {
+                id
+                slug
+                title
+                content
+                isRevision
+                isPreview
+                isSticky
+                excerpt
+                uri
+                status
+              }
+            }
+          }
+          ... on Page {
+            id
+            slug
+            title
+            content
+            isPreview
+            isRevision
+            isFrontPage
+            isPostsPage
+            uri
+            status
+            preview {
+              node {
+                id
+                slug
+                title
+                content
+                isPreview
+                isRevision
+                isFrontPage
+                isPostsPage
+                uri
+                status
+              }
+            }
+          }
+        }
+      }
+    `,
+  });
+
+  let node = result?.data?.contentNode;
+
+  if (!node) {
+    return node;
+  }
+
+  if (asPreview && !node.isPreview) {
+    if (!node.preview?.node) {
+      return node;
     }
 
-    const result = await client.query<{ revisions: { nodes: Post[] } }>({
-      query: gql`
-            query {
-                revisions(where: {id: ${id}}) {
-                    nodes {
-                    ... on Post {
-                        id
-                        title
-                        slug
-                        status
-                        content
-                        excerpt
-                    }
-                    }
-                }
-            }
-        `,
-    });
-
-    return result?.data?.revisions.nodes[0];
-  },
-  {
-    isDeepEqual: false,
-    isPromise: true,
-    isSerialized: true,
-    maxAge: 1000,
+    node = node.preview.node;
   }
-);
+
+  return {
+    id: node.id,
+    slug: node.slug,
+    title: node.title,
+    content: node.content,
+    isRevision: node.isRevision,
+    isPreview: node.isPreview,
+    isSticky: (node as Post).isSticky,
+    excerpt: (node as Post).excerpt,
+    uri: node.uri,
+    status: node.status,
+    isFrontPage: (node as Page).isFrontPage,
+    isPostsPage: (node as Page).isPostsPage,
+  };
+});
 
 export const generalSettings = moize(async function generalSettings(
-  client: ApolloClient<NormalizedCacheObject>
+  client: ApolloClient<NormalizedCacheObject>,
 ): Promise<GeneralSettings> {
   const result = await client.query<{ generalSettings: GeneralSettings }>({
     query: gql`

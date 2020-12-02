@@ -1,7 +1,7 @@
-import React from "react";
-import { ApolloProvider } from "@apollo/client";
-import { useClient } from "../client";
-import { ApiConfig } from "../types";
+import React from 'react';
+import { ApolloProvider } from '@apollo/client';
+import { useClient } from '../client';
+import { ApiConfig } from '../types';
 
 export interface ApiProviderProps {
   config: ApiConfig;

@@ -1,14 +1,14 @@
-import { Response, Request } from "express";
-import fetch from "isomorphic-fetch";
-import { ApiConfig } from "./types";
-import { normalizeConfig } from "./utils";
+import { Response, Request } from 'express';
+import fetch from 'isomorphic-fetch';
+import { ApiConfig } from './types';
+import { normalizeConfig } from './utils';
 
 export function authorizeExpressHandler(config: ApiConfig) {
   const cfg = normalizeConfig(config);
 
   if (!cfg || !cfg.secret) {
     throw new Error(
-      "You must set your configuration with a baseUrl and secret for your WP site."
+      'You must set your configuration with a baseUrl and secret for your WP site.',
     );
   }
 
@@ -18,7 +18,7 @@ export function authorizeExpressHandler(config: ApiConfig) {
 
       if (!code) {
         res.status(400).send({
-          message: "No authentication code found",
+          message: 'No authentication code found',
         });
 
         return;
@@ -26,10 +26,10 @@ export function authorizeExpressHandler(config: ApiConfig) {
 
       const response = await fetch(`${cfg.baseUrl}/wp-json/wpac/v1/authorize`, {
         headers: {
-          "Content-Type": "application/json",
-          "x-wpe-headless-secret": cfg.secret as string,
+          'Content-Type': 'application/json',
+          'x-wpe-headless-secret': cfg.secret as string,
         },
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify({
           code,
         }),

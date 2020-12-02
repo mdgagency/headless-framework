@@ -1,7 +1,7 @@
-import React from "react";
-import { ApiConfig, HeadlessTheme } from "../types";
-import { ApiProvider } from "./ApiProvider";
-import { ThemeProvider } from "./ThemeProvider";
+import React from 'react';
+import { ApiConfig, HeadlessTheme } from '../types';
+import { ApiProvider } from './ApiProvider';
+import { ThemeProvider } from './ThemeProvider';
 
 export interface HeadlessProviderProps {
   api: ApiConfig;
@@ -11,7 +11,7 @@ export interface HeadlessProviderProps {
 export function HeadlessProvider({ api, theme }: HeadlessProviderProps) {
   return (
     <ApiProvider config={api}>
-      <ThemeProvider wpUrl={api.baseUrl} theme={theme} />
+      <ThemeProvider theme={theme} />
     </ApiProvider>
   );
 }

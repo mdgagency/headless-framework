@@ -4,54 +4,83 @@ export interface ApiConfig {
   secret?: string;
 }
 
-export interface PageInfo {
-  have_posts: boolean;
-  post_id: number;
-  post_type: string;
-  is_404: boolean;
-  is_archive: boolean;
-  is_single: boolean;
-  is_page: boolean;
-  is_home: boolean;
-  is_category: boolean;
-  is_author: boolean;
-  is_search: boolean;
-  is_tag: boolean;
-  is_preview?: boolean;
-  is_revision?: boolean;
-}
-
 export interface TemplateProps {
-  pageInfo: PageInfo;
+  pageInfo: UriInfo;
 }
 
 export interface HeadlessTheme {
-  DefaultTemplate: import("react").FC<TemplateProps>;
-  SingleTemplate?: import("react").FC<TemplateProps>;
-  ListTemplate?: import("react").FC<TemplateProps>;
-  NotFoundTemplate?: import("react").FC<TemplateProps>;
+  DefaultTemplate: import('react').FC<TemplateProps>;
+  SingleTemplate?: import('react').FC<TemplateProps>;
+  ListTemplate?: import('react').FC<TemplateProps>;
+  NotFoundTemplate?: import('react').FC<TemplateProps>;
 }
 
 export interface ThemeContext {
-  pageInfo?: PageInfo;
+  pageInfo?: UriInfo;
 }
 
-export enum PostIdType {
-  DATABASE_ID = "DATABASE_ID",
-  ID = "ID",
-  URI = "URI",
-  SLUG = "SLUG",
+export enum ContentNodeIdType {
+  DATABASE_ID = 'DATABASE_ID',
+  ID = 'ID',
+  URI = 'URI',
+  SLUG = 'SLUG',
 }
 
-export interface Post {
+export interface ConnectionEdge<NodeType> {
+  cursor: string;
+  node: NodeType;
+}
+
+export interface Connection<NodeType> {
+  pageInfo: PageInfo;
+  edges: ConnectionEdge<NodeType>[];
+}
+
+export interface UriInfo {
+  id?: string;
+  isPostsPage?: boolean;
+  isFrontPage?: boolean;
+  isPreview?: boolean;
+  is404?: boolean;
+  uriPath: string;
+}
+
+export interface PageInfo {
+  endCursor: string;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  startCursor: string;
+}
+
+export interface ContentNode {
   id: string;
   title: string;
   slug: string;
   status: string;
   content: string;
-  excerpt: string;
+  isRevision: boolean;
   isPreview: boolean;
-  link: string;
+  uri: string;
+}
+
+export interface PostPreview {
+  node: Omit<Post, 'preview'>;
+}
+
+export interface PagePreview {
+  node: Omit<Page, 'preview'>;
+}
+
+export interface Post extends ContentNode {
+  excerpt: string;
+  isSticky: boolean;
+  preview?: PostPreview;
+}
+
+export interface Page extends ContentNode {
+  isFrontPage: boolean;
+  isPostsPage: boolean;
+  preview?: PagePreview;
 }
 
 export interface GeneralSettings {

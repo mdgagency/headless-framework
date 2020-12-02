@@ -1,30 +1,30 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { PageInfo } from "../types";
-import { getPageInfo } from "./services";
-import * as utils from "../utils";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import {
+  ApolloClient,
+  NormalizedCacheObject,
+  useApolloClient,
+} from '@apollo/client';
+import { UriInfo } from '../types';
+import { getUriInfo } from './services';
 
-export function usePageInfo(baseUrl: string) {
-  const [pageInfo, setPageInfo] = useState<PageInfo>();
+export function useUriInfo() {
+  const [pageInfo, setPageInfo] = useState<UriInfo>();
   const router = useRouter();
+  const client = useApolloClient();
 
   useEffect(() => {
     let subscribed = true;
 
     if (router) {
-      let page = router.asPath;
+      const page = router.asPath;
 
-      if (page.indexOf("[[") === -1) {
-        const wpUrl = utils.trimTrailingSlash(baseUrl);
-
-        const path = utils.getUrlPath(page);
-
-        if (!!path) {
-          page = path;
-        }
-
+      if (page.indexOf('[[') === -1) {
         void (async () => {
-          const info = await getPageInfo(`${wpUrl}${page}`);
+          const info = await getUriInfo(
+            client as ApolloClient<NormalizedCacheObject>,
+            page,
+          );
 
           if (!subscribed) {
             return;
@@ -38,7 +38,7 @@ export function usePageInfo(baseUrl: string) {
     return () => {
       subscribed = false;
     };
-  }, [baseUrl, router, pageInfo]);
+  }, [router, client]);
 
   return pageInfo;
 }

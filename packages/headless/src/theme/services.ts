@@ -1,47 +1,51 @@
-import moize from "moize";
-import fetch from "isomorphic-fetch";
-import { PageInfo } from "../types";
-import { getQueryParam } from "../utils";
+import { gql, ApolloClient, NormalizedCacheObject } from '@apollo/client';
+import moize from 'moize';
+import { getUrlPath } from '../utils';
+import { UriInfo } from '../types';
 
-export const getPageInfo = moize(
-  async function getPageInfo(link: string): Promise<PageInfo> {
-    if (/preview=true/.test(link)) {
-      const search: string = link.split("?")[1];
-      let id = getQueryParam(search, "p");
-      let isRevision = false;
+export const getUriInfo = moize(
+  async function getPageInfo(
+    client: ApolloClient<NormalizedCacheObject>,
+    uri: string,
+  ): Promise<UriInfo> {
+    const uriPath = getUrlPath(uri);
+    const isPreview = /preview=true/.test(uriPath);
+    const response = await client.query<{ nodeByUri?: UriInfo }>({
+      query: gql`
+        query {
+          nodeByUri(uri: "${uriPath}") {
+            id
+            ... on ContentType {
+              isFrontPage
+              isPostsPage
+            }
+          }
+        }
+      `,
+    });
+    const result = response?.data?.nodeByUri;
 
-      if (!id) {
-        id = getQueryParam(search, "preview_id");
-        isRevision = true;
-      }
-
+    if (!result) {
       return {
-        have_posts: false,
-        post_id: Number(id),
-        post_type: "post",
-        is_404: false,
-        is_archive: false,
-        is_single: true,
-        is_page: false,
-        is_home: false,
-        is_category: false,
-        is_author: false,
-        is_search: false,
-        is_tag: false,
-        is_preview: true,
-        is_revision: isRevision,
+        is404: true,
+        uriPath,
       };
     }
 
-    const response = await fetch(link);
-    const result: PageInfo = await response.json();
+    const { isPostsPage, isFrontPage, id } = result;
 
-    return result;
+    return {
+      isPostsPage,
+      isFrontPage,
+      id,
+      isPreview,
+      uriPath,
+    };
   },
   {
     isDeepEqual: false,
     isPromise: true,
     isSerialized: true,
     maxAge: 1000,
-  }
+  },
 );
