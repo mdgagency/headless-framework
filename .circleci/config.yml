@@ -217,6 +217,11 @@ jobs:
           at: ~/project
       - php/install-php:
           version: '7.4'
+      - run:
+          name: Install PHP extensions
+          command: |
+            sudo apt-get update -yq
+            sudo apt-get install -yq php-curl php-xml
       - php/install-composer
       - php/install-packages:
           app-dir: .
