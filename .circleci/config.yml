@@ -220,12 +220,14 @@ jobs:
       - run:
           name: Install PHP extensions
           command: |
+            php -v
+            which php
             find /etc/php
             sudo apt-get update -yq
-            sudo apt-get install -yq php-curl php-xml
+            sudo apt-get install php7.4-curl php7.4-xml
             find /etc/php
-            sudo phpenmod ext-curl
-            sudo phpenmod ext-dom
+            sudo phpenmod -v 7.4 ext-curl
+            sudo phpenmod -v 7.4 ext-dom
             find /etc/php
       - php/install-composer
       - php/install-packages:
