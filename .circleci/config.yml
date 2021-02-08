@@ -217,11 +217,17 @@ jobs:
           at: ~/project
       - php/install-php:
           version: '7.4'
+      - php/install-composer
+      - php/install-packages:
+          app-dir: .
       - node/install-packages
       - run:
           name: E2E tests
           command: |
-            npm run wp:start && npm run cypress:run && npm run wp:stop
+            npm run wp:start
+            vendor/bin/codecept build
+            vendor/bin/codecept run
+            npm run wp:stop
 
 
 workflows:
