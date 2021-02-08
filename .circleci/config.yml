@@ -220,8 +220,13 @@ jobs:
       - run:
           name: Install PHP extensions
           command: |
+            find /etc/php
             sudo apt-get update -yq
             sudo apt-get install -yq php-curl php-xml
+            find /etc/php
+            sudo phpenmod ext-curl
+            sudo phpenmod ext-dom
+            find /etc/php
       - php/install-composer
       - php/install-packages:
           app-dir: .
