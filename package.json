@@ -8,9 +8,9 @@
     "wp-env": "wp-env",
     "wp:start": "wp-env start",
     "wp:stop": "wp-env stop",
-    "wp:destroy": "wp-env destroy",
+    "wp:destroy": "wp-env destroy"
   },
   "devDependencies": {
-\    "lerna": "^3.22.1"
+    "lerna": "^3.22.1"
   }
 }
